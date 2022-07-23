@@ -19,6 +19,8 @@ const Page = () => {
         case "Escape":
           setOpen(false);
           break;
+
+          default:
       }
     }
   
