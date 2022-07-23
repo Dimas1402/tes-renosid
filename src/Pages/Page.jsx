@@ -1,13 +1,31 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import "../Assets/styles/index.css";
 import { Modal } from "../Components/Modal";
 
 const Page = () => {
   const [state, setState] = useState({
-    open: false,
     list: [],
     dataModal: {},
   });
+  const [open,setOpen]  = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+  
+    function handleKeyUp(event) {
+      switch (event.key) {
+        case "Escape":
+          setOpen(false);
+          break;
+      }
+    }
+  
+    window.addEventListener("keyup", handleKeyUp);
+    return () => window.removeEventListener("keyup", handleKeyUp);
+  }, [open]);
+  
 
   // func input
   const handleChange = (e) => {
@@ -18,12 +36,13 @@ const Page = () => {
 
   //open modal
   const handleOpen = (res) => {
-    setState({ ...state, open: true, dataModal: res });
+    setOpen(true);
+    setState({ ...state, dataModal: res });
   };
 
   //close modal
   const handleClose = () => {
-    setState({ ...state, open: false });
+    setOpen(false)
   };
 
   // add list
@@ -42,8 +61,10 @@ const Page = () => {
     const newList = state?.list?.filter(
       (item) => item.id !== state?.dataModal?.id
     );
-    setState({ ...state, list: newList, open: false });
+    setState({ ...state, list: newList});
+    setOpen(false)
   };
+
 
   return (
     <section>
@@ -99,7 +120,7 @@ const Page = () => {
       </div>
 
       <Modal
-        open={state.open}
+        open={open}
         handleClose={handleClose}
         handleRemove={handleRemove}
         title={state?.dataModal?.title}
